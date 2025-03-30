@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Delifarm Group Ordering System</title>
   <style>
     /* Styles are unchanged from the previous version */
@@ -79,7 +79,7 @@
     <div id="comboList">
       <div class="combo-section">
         <h3>Combo #1</h3>
-        <label for="smallDishes1">Choose 2 Small Dishes:</label>
+        <label>Choose 2 Small Dishes:</label>
         <select class="smallDish" required>
           <option value="" disabled selected>Select a dish</option>
           <option value="LC1">LC1: Chicken Tofu</option>
@@ -93,7 +93,7 @@
           <option value="LC6">LC6: BBQ Pork</option>
         </select>
 
-        <label for="mainDish">Choose 1 Main Dish:</label>
+        <label>Choose 1 Main Dish:</label>
         <select class="mainDish" required>
           <option value="" disabled selected>Select a dish</option>
           <option value="M1">M1: Curry Chicken</option>
@@ -108,9 +108,9 @@
     <!-- Customer Details -->
     <div class="combo-section">
       <label for="contact">Contact Number:</label>
-      <input type="text" id="contact" placeholder="Enter your phone number" required>
+      <input type="text" id="contact" placeholder="Enter your phone number" required />
       <label for="pickupTime">Pickup Time:</label>
-      <input type="time" id="pickupTime" required>
+      <input type="time" id="pickupTime" required />
     </div>
 
     <!-- Order Summary -->
@@ -125,9 +125,9 @@
 
   <script>
     let comboCount = 1;
-    const combos = []; // Array to store all combos
 
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbwPfAmZP94ZS0j7AzuU1OzfvXakzrOXHbdSLvrkhFu2MAtpbhgemhkwdW4R3TZM1opM/exec'; // Replace with your Google Apps Script URL
+    // Use your Web App URL here:
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbwPfAmZP94ZS0j7AzuU1OzfvXakzrOXHbdSLvrkhFu2MAtpbhgemhkwdW4R3TZM1opM/exec'; 
 
     // Add another combo
     document.getElementById('addCombo').addEventListener('click', () => {
@@ -139,7 +139,7 @@
       newCombo.classList.add('combo-section');
       newCombo.innerHTML = `
         <h3>Combo #${comboCount}</h3>
-        <label for="smallDishes1">Choose 2 Small Dishes:</label>
+        <label>Choose 2 Small Dishes:</label>
         <select class="smallDish" required>
           <option value="" disabled selected>Select a dish</option>
           <option value="LC1">LC1: Chicken Tofu</option>
@@ -152,7 +152,7 @@
           <option value="LC5">LC5: Soy Chicken</option>
           <option value="LC6">LC6: BBQ Pork</option>
         </select>
-        <label for="mainDish">Choose 1 Main Dish:</label>
+        <label>Choose 1 Main Dish:</label>
         <select class="mainDish" required>
           <option value="" disabled selected>Select a dish</option>
           <option value="M1">M1: Curry Chicken</option>
@@ -189,6 +189,9 @@
       updateSummary();
     }
 
+    // Listen for changes so the summary updates
+    document.addEventListener('change', updateSummary);
+
     // Submit the order
     document.getElementById('submitOrder').addEventListener('click', async () => {
       const contact = document.getElementById('contact').value;
@@ -211,12 +214,15 @@
         combos: orderCombos,
       };
 
+      console.log('Submitting the following data:', orderData);
+
       try {
         const response = await fetch(scriptURL, {
           method: 'POST',
           body: JSON.stringify(orderData),
           headers: { 'Content-Type': 'application/json' },
         });
+
         if (response.ok) {
           alert('Order submitted successfully!');
         } else {
@@ -227,48 +233,6 @@
         alert('Error submitting order. Please check your internet connection.');
       }
     });
-
-    document.getElementById('submitOrder').addEventListener('click', async () => {
-  const contact = document.getElementById('contact').value;
-  const pickupTime = document.getElementById('pickupTime').value;
-
-  const orderCombos = [];
-  document.querySelectorAll('.combo-section').forEach(section => {
-    const smallDishes = section.querySelectorAll('.smallDish');
-    const mainDish = section.querySelector('.mainDish');
-    orderCombos.push({
-      smallDish1: smallDishes[0]?.value || '',
-      smallDish2: smallDishes[1]?.value || '',
-      mainDish: mainDish?.value || '',
-    });
-  });
-
-  const orderData = {
-    contact,
-    pickupTime,
-    combos: orderCombos,
-  };
-
-  console.log('Submitting the following data:', orderData); // Debug log
-
-  try {
-    const response = await fetch(scriptURL, {
-      method: 'POST',
-      body: JSON.stringify(orderData),
-      headers: { 'Content-Type': 'application/json' },
-    });
-
-    if (response.ok) {
-      alert('Order submitted successfully!');
-    } else {
-      alert('Failed to submit order. Please try again.');
-    }
-  } catch (error) {
-    console.error('Error submitting order:', error); // Debug log for errors
-    alert('Error submitting order. Please check your internet connection.');
-  }
-});
-
   </script>
 </body>
 </html>
