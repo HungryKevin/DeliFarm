@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Delifarm Group Ordering System</title>
   <style>
-    /* Your existing styles remain unchanged */
     body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; }
     .container { max-width: 800px; margin: 20px auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
     h1, h2 { text-align: center; color: #2c3e50; }
@@ -21,7 +20,7 @@
 </head>
 <body>
   <div class="container">
-    <h1>Delifarm Group Ordering System JSON TEST2</h1>
+    <h1>Delifarm Group Ordering System</h1>
     <h2>Lunch Combos: Choose 2 + 1</h2>
 
     <form id="orderForm" action="https://script.google.com/macros/s/AKfycbwPfAmZP94ZS0j7AzuU1OzfvXakzrOXHbdSLvrkhFu2MAtpbhgemhkwdW4R3TZM1opM/exec" method="POST">
@@ -29,25 +28,10 @@
         <div class="combo-section">
           <h3>Combo #1</h3>
           <label>Choose 2 Small Dishes:</label>
-          <select name="combos[0][smallDish1]" required>
-            <option value="" disabled selected>Select a dish</option>
-            <option value="LC1">LC1: Chicken Tofu</option>
-            <option value="LC2">LC2: Coconut Eggplant</option>
-            <option value="LC3">LC3: Smoked Bacon</option>
-          </select>
-          <select name="combos[0][smallDish2]" required>
-            <option value="" disabled selected>Select another dish</option>
-            <option value="LC4">LC4: Swiss Wings</option>
-            <option value="LC5">LC5: Soy Chicken</option>
-            <option value="LC6">LC6: BBQ Pork</option>
-          </select>
+          <select name="combos[0][smallDish1]" class="smallDish" required></select>
+          <select name="combos[0][smallDish2]" class="smallDish" required></select>
           <label>Choose 1 Main Dish:</label>
-          <select name="combos[0][mainDish]" required>
-            <option value="" disabled selected>Select a dish</option>
-            <option value="M1">M1: Curry Chicken</option>
-            <option value="M2">M2: Tomato Beef</option>
-            <option value="M3">M3: Fried Noodles</option>
-          </select>
+          <select name="combos[0][mainDish]" class="mainDish" required></select>
         </div>
       </div>
 
@@ -70,8 +54,56 @@
   </div>
 
   <script>
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbwPfAmZP94ZS0j7AzuU1OzfvXakzrOXHbdSLvrkhFu2MAtpbhgemhkwdW4R3TZM1opM/exec';
     let comboCount = 1;
+    let smallDishes = [];
+    let mainDishes = [];
 
+    // Fetch menu data on page load
+    async function loadMenu() {
+      try {
+        const response = await fetch(scriptURL, { method: 'GET' });
+        const data = await response.json();
+        if (data.result === "success") {
+          smallDishes = data.smallDishes;
+          mainDishes = data.mainDishes;
+          populateDropdowns();
+        } else {
+          console.error('Error fetching menu:', data.error);
+          alert('Failed to load menu. Please try refreshing the page.');
+        }
+      } catch (error) {
+        console.error('Error fetching menu:', error);
+        alert('Error loading menu. Please check your internet connection.');
+      }
+    }
+
+    // Populate dropdowns with fetched data
+    function populateDropdowns() {
+      document.querySelectorAll('.smallDish').forEach(select => {
+        select.innerHTML = '<option value="" disabled selected>Select a dish</option>';
+        smallDishes.forEach(dish => {
+          const option = document.createElement('option');
+          option.value = dish.id; // Use Menu ID as value
+          option.textContent = dish.name; // Display Item Name
+          select.appendChild(option);
+        });
+      });
+
+      document.querySelectorAll('.mainDish').forEach(select => {
+        select.innerHTML = '<option value="" disabled selected>Select a dish</option>';
+        mainDishes.forEach(dish => {
+          const option = document.createElement('option');
+          option.value = dish.id; // Use Menu ID as value
+          option.textContent = dish.name; // Display Item Name
+          select.appendChild(option);
+        });
+      });
+
+      updateSummary(); // Update summary after populating
+    }
+
+    // Add another combo
     document.getElementById('addCombo').addEventListener('click', () => {
       comboCount++;
       const comboList = document.getElementById('comboList');
@@ -80,31 +112,17 @@
       newCombo.innerHTML = `
         <h3>Combo #${comboCount}</h3>
         <label>Choose 2 Small Dishes:</label>
-        <select name="combos[${comboCount - 1}][smallDish1]" required>
-          <option value="" disabled selected>Select a dish</option>
-          <option value="LC1">LC1: Chicken Tofu</option>
-          <option value="LC2">LC2: Coconut Eggplant</option>
-          <option value="LC3">LC3: Smoked Bacon</option>
-        </select>
-        <select name="combos[${comboCount - 1}][smallDish2]" required>
-          <option value="" disabled selected>Select another dish</option>
-          <option value="LC4">LC4: Swiss Wings</option>
-          <option value="LC5">LC5: Soy Chicken</option>
-          <option value="LC6">LC6: BBQ Pork</option>
-        </select>
+        <select name="combos[${comboCount - 1}][smallDish1]" class="smallDish" required></select>
+        <select name="combos[${comboCount - 1}][smallDish2]" class="smallDish" required></select>
         <label>Choose 1 Main Dish:</label>
-        <select name="combos[${comboCount - 1}][mainDish]" required>
-          <option value="" disabled selected>Select a dish</option>
-          <option value="M1">M1: Curry Chicken</option>
-          <option value="M2">M2: Tomato Beef</option>
-          <option value="M3">M3: Fried Noodles</option>
-        </select>
+        <select name="combos[${comboCount - 1}][mainDish]" class="mainDish" required></select>
         <button type="button" class="remove-btn" onclick="this.parentElement.remove(); updateSummary();">Remove Combo</button>
       `;
       comboList.appendChild(newCombo);
-      updateSummary();
+      populateDropdowns(); // Repopulate all dropdowns to include the new ones
     });
 
+    // Update order summary
     function updateSummary() {
       const summaryList = document.getElementById('summaryList');
       summaryList.innerHTML = '';
@@ -113,14 +131,20 @@
         const smallDish2 = section.querySelector(`select[name="combos[${index}][smallDish2]"]`);
         const mainDish = section.querySelector(`select[name="combos[${index}][mainDish]"]`);
         if (smallDish1.value && smallDish2.value && mainDish.value) {
+          const smallDish1Name = smallDishes.find(d => d.id === smallDish1.value)?.name || smallDish1.value;
+          const smallDish2Name = smallDishes.find(d => d.id === smallDish2.value)?.name || smallDish2.value;
+          const mainDishName = mainDishes.find(d => d.id === mainDish.value)?.name || mainDish.value;
           const summaryItem = document.createElement('li');
-          summaryItem.textContent = `Combo ${index + 1}: ${smallDish1.value}, ${smallDish2.value}, ${mainDish.value}`;
+          summaryItem.textContent = `Combo ${index + 1}: ${smallDish1Name}, ${smallDish2Name}, ${mainDishName}`;
           summaryList.appendChild(summaryItem);
         }
       });
     }
 
     document.getElementById('orderForm').addEventListener('change', updateSummary);
+
+    // Load menu when the page loads
+    window.onload = loadMenu;
   </script>
 </body>
 </html>
