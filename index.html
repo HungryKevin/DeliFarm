@@ -194,45 +194,54 @@
 
     // Submit the order
     document.getElementById('submitOrder').addEventListener('click', async () => {
-      const contact = document.getElementById('contact').value;
-      const pickupTime = document.getElementById('pickupTime').value;
+  const contact = document.getElementById('contact').value;
+  const pickupTime = document.getElementById('pickupTime').value;
 
-      const orderCombos = [];
-      document.querySelectorAll('.combo-section').forEach(section => {
-        const smallDishes = section.querySelectorAll('.smallDish');
-        const mainDish = section.querySelector('.mainDish');
-        orderCombos.push({
-          smallDish1: smallDishes[0]?.value || '',
-          smallDish2: smallDishes[1]?.value || '',
-          mainDish: mainDish?.value || '',
-        });
+  const orderCombos = [];
+  document.querySelectorAll('.combo-section').forEach(section => {
+    const smallDishes = section.querySelectorAll('.smallDish');
+    const mainDish = section.querySelector('.mainDish');
+    if (smallDishes[0].value && smallDishes[1].value && mainDish.value) { // Only include complete combos
+      orderCombos.push({
+        smallDish1: smallDishes[0].value,
+        smallDish2: smallDishes[1].value,
+        mainDish: mainDish.value,
       });
+    }
+  });
 
-      const orderData = {
-        contact,
-        pickupTime,
-        combos: orderCombos,
-      };
+  const orderData = {
+    contact,
+    pickupTime,
+    combos: JSON.stringify(orderCombos), // Stringify combos for form-urlencoded
+  };
 
-      console.log('Submitting the following data:', orderData);
+  console.log('Submitting the following data:', orderData);
 
-      try {
-        const response = await fetch(scriptURL, {
-          method: 'POST',
-          body: JSON.stringify(orderData),
-          headers: { 'Content-Type': 'application/json' },
-        });
+  try {
+    const formData = new URLSearchParams();
+    for (const key in orderData) {
+      formData.append(key, orderData[key]);
+    }
 
-        if (response.ok) {
-          alert('Order submitted successfully!');
-        } else {
-          alert('Failed to submit order. Please try again.');
-        }
-      } catch (error) {
-        console.error('Error submitting order:', error);
-        alert('Error submitting order. Please check your internet connection.');
-      }
+    const response = await fetch(scriptURL, {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
     });
+
+    if (response.ok) {
+      alert('Order submitted successfully!');
+    } else {
+      alert('Failed to submit order. Please try again.');
+    }
+  } catch (error) {
+    console.error('Error submitting order:', error);
+    alert('Error submitting order. Please check your internet connection.');
+  }
+});
   </script>
 </body>
 </html>
