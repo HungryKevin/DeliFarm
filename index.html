@@ -5,69 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Delifarm Group Ordering System</title>
   <style>
-    /* Styles are unchanged from the previous version */
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f4f4f4;
-    }
-    .container {
-      max-width: 800px;
-      margin: 20px auto;
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-    h1, h2 {
-      text-align: center;
-      color: #2c3e50;
-    }
-    .combo-section {
-      margin-bottom: 20px;
-      padding: 15px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      background-color: #f9f9f9;
-    }
-    select, input, button {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-    button {
-      background-color: #2ecc71;
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #27ae60;
-    }
-    .summary {
-      margin-top: 20px;
-      padding: 15px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      background-color: #eafaf1;
-    }
-    .summary h3 {
-      margin-top: 0;
-    }
-    .remove-btn {
-      background-color: #e74c3c;
-      color: white;
-      padding: 5px 10px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    .remove-btn:hover {
-      background-color: #c0392b;
-    }
+    /* Your existing styles remain unchanged */
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; }
+    .container { max-width: 800px; margin: 20px auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
+    h1, h2 { text-align: center; color: #2c3e50; }
+    .combo-section { margin-bottom: 20px; padding: 15px; border: 1px solid #ccc; border-radius: 8px; background-color: #f9f9f9; }
+    select, input, button { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; }
+    button { background-color: #2ecc71; color: white; font-size: 16px; cursor: pointer; }
+    button:hover { background-color: #27ae60; }
+    .summary { margin-top: 20px; padding: 15px; border: 1px solid #ccc; border-radius: 8px; background-color: #eafaf1; }
+    .summary h3 { margin-top: 0; }
+    .remove-btn { background-color: #e74c3c; color: white; padding: 5px 10px; border: none; border-radius: 4px; cursor: pointer; }
+    .remove-btn:hover { background-color: #c0392b; }
   </style>
 </head>
 <body>
@@ -75,7 +24,6 @@
     <h1>Delifarm Group Ordering System</h1>
     <h2>Lunch Combos: Choose 2 + 1</h2>
 
-    <!-- Form for adding combos -->
     <div id="comboList">
       <div class="combo-section">
         <h3>Combo #1</h3>
@@ -92,7 +40,6 @@
           <option value="LC5">LC5: Soy Chicken</option>
           <option value="LC6">LC6: BBQ Pork</option>
         </select>
-
         <label>Choose 1 Main Dish:</label>
         <select class="mainDish" required>
           <option value="" disabled selected>Select a dish</option>
@@ -105,7 +52,6 @@
 
     <button id="addCombo">Add Another Combo</button>
 
-    <!-- Customer Details -->
     <div class="combo-section">
       <label for="contact">Contact Number:</label>
       <input type="text" id="contact" placeholder="Enter your phone number" required />
@@ -113,28 +59,22 @@
       <input type="time" id="pickupTime" required />
     </div>
 
-    <!-- Order Summary -->
     <div class="summary" id="orderSummary">
       <h3>Order Summary:</h3>
       <ul id="summaryList"></ul>
     </div>
 
-    <!-- Submit Button -->
     <button id="submitOrder">Submit Order</button>
   </div>
 
   <script>
     let comboCount = 1;
-
-    // Use your Web App URL here:
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbwPfAmZP94ZS0j7AzuU1OzfvXakzrOXHbdSLvrkhFu2MAtpbhgemhkwdW4R3TZM1opM/exec'; 
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbwPfAmZP94ZS0j7AzuU1OzfvXakzrOXHbdSLvrkhFu2MAtpbhgemhkwdW4R3TZM1opM/exec';
 
     // Add another combo
     document.getElementById('addCombo').addEventListener('click', () => {
       comboCount++;
       const comboList = document.getElementById('comboList');
-
-      // Create a new combo section
       const newCombo = document.createElement('div');
       newCombo.classList.add('combo-section');
       newCombo.innerHTML = `
@@ -159,21 +99,20 @@
           <option value="M2">M2: Tomato Beef</option>
           <option value="M3">M3: Fried Noodles</option>
         </select>
-        <button class="remove-btn" onclick="removeCombo(${comboCount})">Remove Combo</button>
+        <button class="remove-btn" onclick="this.parentElement.remove(); updateSummary();">Remove Combo</button>
       `;
       comboList.appendChild(newCombo);
       updateSummary();
     });
 
-    // Update the order summary dynamically
+    // Update order summary
     function updateSummary() {
       const summaryList = document.getElementById('summaryList');
       summaryList.innerHTML = '';
-
       document.querySelectorAll('.combo-section').forEach((section, index) => {
         const smallDishes = section.querySelectorAll('.smallDish');
         const mainDish = section.querySelector('.mainDish');
-        if (smallDishes[0] && mainDish) {
+        if (smallDishes.length === 2 && mainDish && smallDishes[0].value && smallDishes[1].value && mainDish.value) {
           const summaryItem = document.createElement('li');
           summaryItem.textContent = `Combo ${index + 1}: ${smallDishes[0].value}, ${smallDishes[1].value}, ${mainDish.value}`;
           summaryList.appendChild(summaryItem);
@@ -181,67 +120,59 @@
       });
     }
 
-    // Remove a combo
-    function removeCombo(comboIndex) {
-      const comboList = document.getElementById('comboList');
-      comboList.removeChild(comboList.children[comboIndex - 1]);
-      comboCount--;
-      updateSummary();
-    }
-
-    // Listen for changes so the summary updates
     document.addEventListener('change', updateSummary);
 
-    // Submit the order
+    // Submit order
     document.getElementById('submitOrder').addEventListener('click', async () => {
-  const contact = document.getElementById('contact').value;
-  const pickupTime = document.getElementById('pickupTime').value;
+      const contact = document.getElementById('contact').value;
+      const pickupTime = document.getElementById('pickupTime').value;
 
-  const orderCombos = [];
-  document.querySelectorAll('.combo-section').forEach(section => {
-    const smallDishes = section.querySelectorAll('.smallDish');
-    const mainDish = section.querySelector('.mainDish');
-    if (smallDishes[0].value && smallDishes[1].value && mainDish.value) { // Only include complete combos
-      orderCombos.push({
-        smallDish1: smallDishes[0].value,
-        smallDish2: smallDishes[1].value,
-        mainDish: mainDish.value,
+      const orderCombos = [];
+      document.querySelectorAll('.combo-section').forEach(section => {
+        const smallDishes = section.querySelectorAll('.smallDish');
+        const mainDish = section.querySelector('.mainDish');
+        if (smallDishes.length === 2 && mainDish && smallDishes[0].value && smallDishes[1].value && mainDish.value) {
+          orderCombos.push({
+            smallDish1: smallDishes[0].value,
+            smallDish2: smallDishes[1].value,
+            mainDish: mainDish.value
+          });
+        }
       });
-    }
-  });
 
-  const orderData = {
-    contact,
-    pickupTime,
-    combos: JSON.stringify(orderCombos), // Stringify combos for form-urlencoded
-  };
+      if (orderCombos.length === 0) {
+        alert('Please add at least one complete combo before submitting.');
+        return;
+      }
 
-  console.log('Submitting the following data:', orderData);
+      const orderData = {
+        contact,
+        pickupTime,
+        combos: orderCombos
+      };
 
-  try {
-    const formData = new URLSearchParams();
-    for (const key in orderData) {
-      formData.append(key, orderData[key]);
-    }
+      console.log('Submitting the following data:', orderData);
 
-    const response = await fetch(scriptURL, {
-      method: 'POST',
-      body: formData,
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
+      try {
+        const response = await fetch(scriptURL, {
+          method: 'POST',
+          body: JSON.stringify(orderData),
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+          alert('Order submitted successfully!');
+        } else {
+          alert(`Failed to submit order: ${result.error || 'Unknown error'}`);
+        }
+      } catch (error) {
+        console.error('Error submitting order:', error);
+        alert('Error submitting order. Please check your internet connection.');
+      }
     });
-
-    if (response.ok) {
-      alert('Order submitted successfully!');
-    } else {
-      alert('Failed to submit order. Please try again.');
-    }
-  } catch (error) {
-    console.error('Error submitting order:', error);
-    alert('Error submitting order. Please check your internet connection.');
-  }
-});
   </script>
 </body>
 </html>
