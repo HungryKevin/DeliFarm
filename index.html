@@ -21,57 +21,57 @@
 </head>
 <body>
   <div class="container">
-    <h1>Delifarm Group Ordering System</h1>
+    <h1>Delifarm Group Ordering System JSON TEST2</h1>
     <h2>Lunch Combos: Choose 2 + 1</h2>
 
-    <div id="comboList">
-      <div class="combo-section">
-        <h3>Combo #1</h3>
-        <label>Choose 2 Small Dishes:</label>
-        <select class="smallDish" required>
-          <option value="" disabled selected>Select a dish</option>
-          <option value="LC1">LC1: Chicken Tofu</option>
-          <option value="LC2">LC2: Coconut Eggplant</option>
-          <option value="LC3">LC3: Smoked Bacon</option>
-        </select>
-        <select class="smallDish" required>
-          <option value="" disabled selected>Select another dish</option>
-          <option value="LC4">LC4: Swiss Wings</option>
-          <option value="LC5">LC5: Soy Chicken</option>
-          <option value="LC6">LC6: BBQ Pork</option>
-        </select>
-        <label>Choose 1 Main Dish:</label>
-        <select class="mainDish" required>
-          <option value="" disabled selected>Select a dish</option>
-          <option value="M1">M1: Curry Chicken</option>
-          <option value="M2">M2: Tomato Beef</option>
-          <option value="M3">M3: Fried Noodles</option>
-        </select>
+    <form id="orderForm" action="https://script.google.com/macros/s/AKfycbwPfAmZP94ZS0j7AzuU1OzfvXakzrOXHbdSLvrkhFu2MAtpbhgemhkwdW4R3TZM1opM/exec" method="POST">
+      <div id="comboList">
+        <div class="combo-section">
+          <h3>Combo #1</h3>
+          <label>Choose 2 Small Dishes:</label>
+          <select name="combos[0][smallDish1]" required>
+            <option value="" disabled selected>Select a dish</option>
+            <option value="LC1">LC1: Chicken Tofu</option>
+            <option value="LC2">LC2: Coconut Eggplant</option>
+            <option value="LC3">LC3: Smoked Bacon</option>
+          </select>
+          <select name="combos[0][smallDish2]" required>
+            <option value="" disabled selected>Select another dish</option>
+            <option value="LC4">LC4: Swiss Wings</option>
+            <option value="LC5">LC5: Soy Chicken</option>
+            <option value="LC6">LC6: BBQ Pork</option>
+          </select>
+          <label>Choose 1 Main Dish:</label>
+          <select name="combos[0][mainDish]" required>
+            <option value="" disabled selected>Select a dish</option>
+            <option value="M1">M1: Curry Chicken</option>
+            <option value="M2">M2: Tomato Beef</option>
+            <option value="M3">M3: Fried Noodles</option>
+          </select>
+        </div>
       </div>
-    </div>
 
-    <button id="addCombo">Add Another Combo</button>
+      <button type="button" id="addCombo">Add Another Combo</button>
 
-    <div class="combo-section">
-      <label for="contact">Contact Number:</label>
-      <input type="text" id="contact" placeholder="Enter your phone number" required />
-      <label for="pickupTime">Pickup Time:</label>
-      <input type="time" id="pickupTime" required />
-    </div>
+      <div class="combo-section">
+        <label for="contact">Contact Number:</label>
+        <input type="text" id="contact" name="contact" placeholder="Enter your phone number" required />
+        <label for="pickupTime">Pickup Time:</label>
+        <input type="time" id="pickupTime" name="pickupTime" required />
+      </div>
 
-    <div class="summary" id="orderSummary">
-      <h3>Order Summary:</h3>
-      <ul id="summaryList"></ul>
-    </div>
+      <div class="summary" id="orderSummary">
+        <h3>Order Summary:</h3>
+        <ul id="summaryList"></ul>
+      </div>
 
-    <button id="submitOrder">Submit Order</button>
+      <button type="submit">Submit Order</button>
+    </form>
   </div>
 
   <script>
     let comboCount = 1;
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbwPfAmZP94ZS0j7AzuU1OzfvXakzrOXHbdSLvrkhFu2MAtpbhgemhkwdW4R3TZM1opM/exec';
 
-    // Add another combo
     document.getElementById('addCombo').addEventListener('click', () => {
       comboCount++;
       const comboList = document.getElementById('comboList');
@@ -80,99 +80,47 @@
       newCombo.innerHTML = `
         <h3>Combo #${comboCount}</h3>
         <label>Choose 2 Small Dishes:</label>
-        <select class="smallDish" required>
+        <select name="combos[${comboCount - 1}][smallDish1]" required>
           <option value="" disabled selected>Select a dish</option>
           <option value="LC1">LC1: Chicken Tofu</option>
           <option value="LC2">LC2: Coconut Eggplant</option>
           <option value="LC3">LC3: Smoked Bacon</option>
         </select>
-        <select class="smallDish" required>
+        <select name="combos[${comboCount - 1}][smallDish2]" required>
           <option value="" disabled selected>Select another dish</option>
           <option value="LC4">LC4: Swiss Wings</option>
           <option value="LC5">LC5: Soy Chicken</option>
           <option value="LC6">LC6: BBQ Pork</option>
         </select>
         <label>Choose 1 Main Dish:</label>
-        <select class="mainDish" required>
+        <select name="combos[${comboCount - 1}][mainDish]" required>
           <option value="" disabled selected>Select a dish</option>
           <option value="M1">M1: Curry Chicken</option>
           <option value="M2">M2: Tomato Beef</option>
           <option value="M3">M3: Fried Noodles</option>
         </select>
-        <button class="remove-btn" onclick="this.parentElement.remove(); updateSummary();">Remove Combo</button>
+        <button type="button" class="remove-btn" onclick="this.parentElement.remove(); updateSummary();">Remove Combo</button>
       `;
       comboList.appendChild(newCombo);
       updateSummary();
     });
 
-    // Update order summary
     function updateSummary() {
       const summaryList = document.getElementById('summaryList');
       summaryList.innerHTML = '';
       document.querySelectorAll('.combo-section').forEach((section, index) => {
-        const smallDishes = section.querySelectorAll('.smallDish');
-        const mainDish = section.querySelector('.mainDish');
-        if (smallDishes.length === 2 && mainDish && smallDishes[0].value && smallDishes[1].value && mainDish.value) {
+        const smallDish1 = section.querySelector(`select[name="combos[${index}][smallDish1]"]`);
+        const smallDish2 = section.querySelector(`select[name="combos[${index}][smallDish2]"]`);
+        const mainDish = section.querySelector(`select[name="combos[${index}][mainDish]"]`);
+        if (smallDish1.value && smallDish2.value && mainDish.value) {
           const summaryItem = document.createElement('li');
-          summaryItem.textContent = `Combo ${index + 1}: ${smallDishes[0].value}, ${smallDishes[1].value}, ${mainDish.value}`;
+          summaryItem.textContent = `Combo ${index + 1}: ${smallDish1.value}, ${smallDish2.value}, ${mainDish.value}`;
           summaryList.appendChild(summaryItem);
         }
       });
     }
 
-    document.addEventListener('change', updateSummary);
-
-    // Submit order
-    document.getElementById('submitOrder').addEventListener('click', async () => {
-      const contact = document.getElementById('contact').value;
-      const pickupTime = document.getElementById('pickupTime').value;
-
-      const orderCombos = [];
-      document.querySelectorAll('.combo-section').forEach(section => {
-        const smallDishes = section.querySelectorAll('.smallDish');
-        const mainDish = section.querySelector('.mainDish');
-        if (smallDishes.length === 2 && mainDish && smallDishes[0].value && smallDishes[1].value && mainDish.value) {
-          orderCombos.push({
-            smallDish1: smallDishes[0].value,
-            smallDish2: smallDishes[1].value,
-            mainDish: mainDish.value
-          });
-        }
-      });
-
-      if (orderCombos.length === 0) {
-        alert('Please add at least one complete combo before submitting.');
-        return;
-      }
-
-      const orderData = {
-        contact,
-        pickupTime,
-        combos: orderCombos
-      };
-
-      console.log('Submitting the following data:', orderData);
-
-      try {
-        const response = await fetch(scriptURL, {
-          method: 'POST',
-          body: JSON.stringify(orderData),
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        });
-
-        const result = await response.json();
-        if (response.ok) {
-          alert('Order submitted successfully!');
-        } else {
-          alert(`Failed to submit order: ${result.error || 'Unknown error'}`);
-        }
-      } catch (error) {
-        console.error('Error submitting order:', error);
-        alert('Error submitting order. Please check your internet connection.');
-      }
-    });
+    document.getElementById('orderForm').addEventListener('change', updateSummary);
   </script>
 </body>
 </html>
